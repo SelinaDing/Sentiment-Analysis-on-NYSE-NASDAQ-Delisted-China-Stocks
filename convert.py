@@ -8,7 +8,7 @@ Created on Mon Oct 19 15:53:07 2020
 
 import pandas as pd
 
-data = pd.read_excel('D:/Academic/Columbia/2020FALL/NLP/Final Project/raw data/cik.xlsx',index_col=None)
+data = pd.read_excel('https://github.com/SelinaDing/Sentiment-Analysis-on-NYSE-NASDAQ-Delisted-China-Stocks/blob/main/cik.xlsx?raw=true',index_col=None)
 #print(data.head(3))
 new_data = data.filter(['Ticker','CIK'],axis=1)
 #cleaned dataset
