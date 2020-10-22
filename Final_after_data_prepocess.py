@@ -67,6 +67,10 @@ for ticker, data in sec_data.items():
             raw_fillings_by_ticker[ticker][file_date] = sec_api.get(file_url)
 print('Example Document:\n\n{}...'.format(next(iter(raw_fillings_by_ticker[example_ticker].values()))[:1000]))
 
+#remove the NAs in sec_data
+for key in list(sec_data.keys()):
+    if not sec_data.get(key):
+        sec_data.pop(key)
 #Break downloaded files into their associated documents, which are sectioned off in the fillings with the tags <DOCUMENT> for the start of each document and </DOCUMENT> for the end of each document.
 
 import re
@@ -75,7 +79,6 @@ def get_documents(text):
     
     doc_start_pattern = re.compile(r'<DOCUMENT>')
     doc_end_pattern = re.compile(r'</DOCUMENT>')   
-    
     doc_start_is = [x.end() for x in      doc_start_pattern.finditer(text)]
     doc_end_is = [x.start() for x in doc_end_pattern.finditer(text)]
     
