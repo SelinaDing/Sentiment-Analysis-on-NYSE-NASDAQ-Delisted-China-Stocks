@@ -51,7 +51,7 @@ def get_sec_data(cik, doc_type, start=0, count=60):
     return entries
 example_ticker = 'AAC'
 sec_data = {}
-#change cik_lookup into cik_dict1
+#change cik_lookup into CIK_dict1
 for ticker, cik in CIK_dict1.items():
     sec_data[ticker] = get_sec_data(cik, '10-K')
 pprint.pprint(sec_data[example_ticker][:5])
@@ -105,7 +105,7 @@ def get_document_type(doc):
     
     return doc_type.lower()
 
-#Filter out the non 10-k documents from the fillings using the get_document_type function.
+#Filter out the non 10-k documents from the fillings using the get_document_type function.change cil_lookup into CIK_dict1
 ten_ks_by_ticker = {}
 for ticker, filling_documents in filling_documents_by_ticker.items():
     ten_ks_by_ticker[ticker] = []
@@ -113,7 +113,7 @@ for ticker, filling_documents in filling_documents_by_ticker.items():
         for document in documents:
             if get_document_type(document) == '10-k':
                 ten_ks_by_ticker[ticker].append({
-                    'cik': cik_lookup[ticker],
+                    'cik': CIK_dict1[ticker],
                     'file': document,
                     'file_date': file_date})
 project_helper.print_ten_k_data(ten_ks_by_ticker[example_ticker][:5], ['cik', 'file', 'file_date'])
@@ -159,3 +159,26 @@ for ticker, ten_ks in ten_ks_by_ticker.items():
         ten_k['file_lemma'] = [word for word in ten_k['file_lemma'] if word not in lemma_english_stopwords]
         
 print('Stop Words Removed')
+
+# sentiment analysis 
+import os
+
+sentiments = ['negative', 'positive', 'uncertainty', 'litigious', 'constraining', 'interesting']
+
+sentiment_df = pd.read_csv('LoughranMcDonald_MasterDictionary_2018.csv')
+sentiment_df.columns = [column.lower() for column in sentiment_df.columns] # Lowercase the columns for ease of use
+
+# Remove unused information
+sentiment_df = sentiment_df[sentiments + ['word']]
+sentiment_df[sentiments] = sentiment_df[sentiments].astype(bool)
+sentiment_df = sentiment_df[(sentiment_df[sentiments]).any(1)]
+
+# Apply the same preprocessing to these words as the 10-k words
+sentiment_df['word'] = lemmatize_words(sentiment_df['word'].str.lower())
+sentiment_df = sentiment_df.drop_duplicates('word')
+
+
+sentiment_df.head()
+
+
+
